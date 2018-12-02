@@ -150,7 +150,6 @@ function register(){
 	var replayLoginPassword = $.trim($("#replayLoginPassword").val());
 	var messageCode = $.trim($("#messageCode").val());
 
-	alert(checkPhone() && checkLoginPassword() && checkLoginPasswordEqu() && !("" == $.trim($("#messageCode").val())));
 
 	if(checkPhone() && checkLoginPassword() && checkLoginPasswordEqu() && !("" == $.trim($("#messageCode").val()))) {
 
@@ -218,6 +217,40 @@ $(function() {
 			$("#btnRegist").addClass("fail");
 		}
 	});
+
+    //60秒倒计时
+    $("#dateBtn1").on("click",function(){
+        var phone = $.trim($("#phone").val());
+        hideError("messageCode")
+        var _this=$(this);
+        if (true) {
+            $.ajax({
+                url:"loan/messageCode",
+                type:"get",
+                data:"phone="+phone,
+                success:function (jsonObject) {
+                    if (jsonObject.errorMessage == "OK") {
+                        alert("您手机收到的短信验证码是:" + jsonObject.messageCode);
+                        if(!$(this).hasClass("on")){
+                            $.leftTime(60,function(d){
+                                if(d.status){
+                                    _this.addClass("on");
+                                    _this.html((d.s=="00"?"60":d.s)+"秒后重新获取");
+                                }else{
+                                    _this.removeClass("on");
+                                    _this.html("获取验证码");
+                                }
+                            });
+                        }
+                    } else {
+                        showError("message","请稍后重试...");
+                    }
+
+                }
+            });
+
+        }
+    });
 
 });
 

@@ -108,38 +108,7 @@
                                 </a>
                                 <script type="text/javascript">
                                     $(function(){
-                                        //60秒倒计时
-                                        $("#dateBtn1").on("click",function(){
-                                            var phone = $.trim($("#phone").val());
-                                            var _this=$(this);
-                                            if (true) {
-                                                $.ajax({
-                                                    url:"loan/messageCode",
-                                                    type:"get",
-                                                    data:"phone="+phone,
-                                                    success:function (jsonObject) {
-                                                        if (jsonObject.errorMessage == "OK") {
-                                                            alert(jsonObject.messageCode);
-                                                            if(!$(this).hasClass("on")){
-                                                                $.leftTime(60,function(d){
-                                                                    if(d.status){
-                                                                        _this.addClass("on");
-                                                                        _this.html((d.s=="00"?"60":d.s)+"秒后重新获取");
-                                                                    }else{
-                                                                        _this.removeClass("on");
-                                                                        _this.html("获取验证码");
-                                                                    }
-                                                                });
-                                                            }
-                                                        } else {
-                                                            showError("message","请稍后重试...");
-                                                        }
 
-                                                    }
-                                                });
-
-                                            }
-                                        });
                                     });
                                 </script>
                             </div>
