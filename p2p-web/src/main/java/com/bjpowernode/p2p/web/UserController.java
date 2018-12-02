@@ -397,16 +397,18 @@ public class UserController {
 
         //获取一个随机数数字
         String randNumber = this.getRandomNumber(4);
-//        String randNumber = "1234";
 
         //准备接口参数
         Map<String,Object> paramMap = new HashMap<String,Object>();
-        paramMap.put("appkey","6b89e6d283f14f83fcef6d6f092785a7");
+        paramMap.put("appkey","6b883f14f83fcef6d6f092785a7");
         paramMap.put("mobile",phone);
         paramMap.put("content","【凯信通】您的验证码是：" + randNumber);
 
+        /**
+         * 【短信服务商】京东万象
+         */
         //调用短信接口
-//        String response = HttpClientUtils.doPost("https://way.jd.com/kaixintong/kaixintong", paramMap);
+//        String responseMsg = HttpClientUtils.doPost("https://way.jd.com/kaixintong/kaixintong", paramMap);
 
         String responseMsg = "{\n" +
                 "    \"code\": \"10000\",\n" +
@@ -446,6 +448,7 @@ public class UserController {
                 redisService.putKeyValue(phone,randNumber,60);
 
                 retMap.put(Constants.ERROR_MESSAGE,Constants.OK);
+                retMap.put("messageCode",randNumber);
 
             } else {
                 retMap.put(Constants.ERROR_MESSAGE,"短信接口调用失败");

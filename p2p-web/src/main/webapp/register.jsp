@@ -118,8 +118,8 @@
                                                     type:"get",
                                                     data:"phone="+phone,
                                                     success:function (jsonObject) {
-                                                        alert(jsonObject.errorMessage);
                                                         if (jsonObject.errorMessage == "OK") {
+                                                            alert(jsonObject.messageCode);
                                                             if(!$(this).hasClass("on")){
                                                                 $.leftTime(60,function(d){
                                                                     if(d.status){
@@ -143,8 +143,8 @@
                                     });
                                 </script>
                             </div>
-                            <span id="messageOk" class="ok" style="display:none;"></span>
-                            <div id="messageErr" class="form-hint" style="display:none;"></div>
+                            <span id="messageCodeOk" class="ok" style="display:none;"></span>
+                            <div id="messageCodeErr" class="form-hint" style="display:none;"></div>
                         </div>
 
 

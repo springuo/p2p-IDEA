@@ -132,6 +132,14 @@ function checkCaptcha() {
 	return true;
 }
 
+/*//验证短信验证码
+function checkMessageCode() {
+	var messageCode = $.trim($("#messageCode").val());
+
+	if ("" == messageCode)
+
+}*/
+
 
 //用户注册
 function register(){
@@ -142,7 +150,9 @@ function register(){
 	var replayLoginPassword = $.trim($("#replayLoginPassword").val());
 	var messageCode = $.trim($("#messageCode").val());
 
-	if(checkPhone() && checkLoginPassword() && checkLoginPasswordEqu()) {
+	alert(checkPhone() && checkLoginPassword() && checkLoginPasswordEqu() && !("" == $.trim($("#messageCode").val())));
+
+	if(checkPhone() && checkLoginPassword() && checkLoginPasswordEqu() && !("" == $.trim($("#messageCode").val()))) {
 
 		$("#loginPassword").val($.md5(loginPassword));
 		$("#replayLoginPassword").val($.md5(replayLoginPassword));
@@ -161,12 +171,12 @@ function register(){
 					//跳转至实名认证页面
 					window.location.href = "realName.jsp";
 				} else {
-					showError("captcha",jsonObject.errorMessage);
+					showError("messageCode",jsonObject.errorMessage);
 				}
 
             },
 			error:function () {
-				showError("captcha","系统繁忙，请稍后重试...");
+				showError("messageCode","系统繁忙，请稍后重试...");
             }
 		});
 
