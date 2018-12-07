@@ -106,11 +106,7 @@
                                             });
                                         </pre>--%>
                                 </a>
-                                <script type="text/javascript">
-                                    $(function(){
 
-                                    });
-                                </script>
                             </div>
                             <span id="messageCodeOk" class="ok" style="display:none;"></span>
                             <div id="messageCodeErr" class="form-hint" style="display:none;"></div>

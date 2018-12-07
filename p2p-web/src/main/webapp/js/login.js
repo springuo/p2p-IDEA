@@ -62,7 +62,7 @@ function checkLoginPassword() {
 }
 
 //验证图形验证码
-function checkCaptcha() {
+/*function checkCaptcha() {
     //获取图形验证码
     var captcha = $.trim($("#captcha").val());
     var flag = true;
@@ -98,22 +98,33 @@ function checkCaptcha() {
     }
 
     return true;
-}
+}*/
 
+function checkMessageCode() {
+    var messageCode = $.trim($("#messageCode").val());
+    if ("" == messageCode) {
+        $("#showId").html("请输入短信验证码");
+        return false;
+    } else {
+        $("#showId").html("");
+    }
+    return true;
+}
 
 //用户登录
 function login() {
 	//获取用户登录的信息
 	var phone = $.trim($("#phone").val());
 	var loginPassword = $.trim($("#loginPassword").val());
+	var messageCode = $.trim($("#messageCode").val());
 
-	if(checkPhone() && checkLoginPassword() && checkCaptcha()){
+	if(checkPhone() && checkLoginPassword() && checkMessageCode()){
 		$("#loginPassword").val($.md5(loginPassword));
 
 		$.ajax({
 			url:"loan/login",
 			type:"post",
-			data:"phone="+phone+"&loginPassword="+$("#loginPassword").val(),
+			data:"phone="+phone+"&loginPassword="+$("#loginPassword").val()+"&messageCode="+messageCode,
 			success:function (jsonObject) {
 				//验证成功之后，从哪来回哪儿去
 				if (jsonObject.errorMessage == "OK") {
@@ -137,6 +148,42 @@ function login() {
 $(function () {
 	//加载平台信息
 	loadStat();
+
+    //60秒倒计时
+    $("#dateBtn1").on("click",function(){
+        var phone = $.trim($("#phone").val());
+
+        var _this=$(this);
+        if ("" != phone) {
+            $.ajax({
+                url: "loan/messageCode",
+                type: "get",
+                data: "phone=" + phone,
+                success: function (jsonObject) {
+                    if (jsonObject.errorMessage == "OK") {
+                        alert("您手机收到的短信验证码是:" + jsonObject.messageCode);
+                        if (!$(this).hasClass("on")) {
+                            $.leftTime(60, function (d) {
+                                if (d.status) {
+                                    _this.addClass("on");
+                                    _this.html((d.s == "00" ? "60" : d.s) + "秒后重新获取");
+                                } else {
+                                    _this.removeClass("on");
+                                    _this.html("获取验证码");
+                                }
+                            });
+                        }
+                    } else {
+                        showError("message", "请稍后重试...");
+                    }
+
+                }
+            });
+
+        } else {
+            $("#showId").html("请输入手机号码");
+        }
+    });
 });
 
 function loadStat() {

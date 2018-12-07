@@ -133,19 +133,27 @@ public class UserController {
 
 
         //用户的注册(手机号，登录密码)【1.新增用户信息 2.开立帐户】 -> 返回Boolean|int|结果对象ResultObject
-        ResultObject resultObject = userService.register(phone,loginPassword);
+        ResultObject resultObject = null;
+        try {
+            resultObject = userService.register(phone,loginPassword);
 
-        //判断是否注册成功
-        if (!StringUtils.equals(Constants.SUCCESS,resultObject.getErrorCode())) {
+            //将用户的信息存放到session中
+            request.getSession().setAttribute(Constants.SESSION_USER,userService.queryUserByPhone(phone));
+
+            retMap.put(Constants.ERROR_MESSAGE,Constants.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
             retMap.put(Constants.ERROR_MESSAGE,"注册失败，请稍后重试...");
-            return retMap;
+
         }
 
+        //判断是否注册成功
+        /*if (!StringUtils.equals(Constants.SUCCESS,resultObject.getErrorCode())) {
+            retMap.put(Constants.ERROR_MESSAGE,"注册失败，请稍后重试...");
+            return retMap;
+        }*/
 
-        //将用户的信息存放到session中
-        request.getSession().setAttribute(Constants.SESSION_USER,userService.queryUserByPhone(phone));
 
-        retMap.put(Constants.ERROR_MESSAGE,Constants.OK);
 
 
         return retMap;
@@ -181,14 +189,21 @@ public class UserController {
         }
 
 
-        //用户的注册(手机号，登录密码)【1.新增用户信息 2.开立帐户】 -> 返回Boolean|int|结果对象ResultObject
-        ResultObject resultObject = userService.register(phone,loginPassword);
+        try {
+
+            //用户的注册(手机号，登录密码)【1.新增用户信息 2.开立帐户】 -> 返回Boolean|int|结果对象ResultObject
+            ResultObject resultObject = userService.register(phone,loginPassword);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            retMap.put(Constants.ERROR_MESSAGE,"注册失败，请稍后重试...");
+        }
 
         //判断是否注册成功
-        if (!StringUtils.equals(Constants.SUCCESS,resultObject.getErrorCode())) {
+        /*if (!StringUtils.equals(Constants.SUCCESS,resultObject.getErrorCode())) {
             retMap.put(Constants.ERROR_MESSAGE,"注册失败，请稍后重试...");
             return retMap;
-        }
+        }*/
 
 
         //将用户的信息存放到session中
@@ -311,7 +326,8 @@ public class UserController {
     @ResponseBody
     public Object login(HttpServletRequest request,
                         @RequestParam (value = "phone",required = true) String phone,
-                        @RequestParam (value = "loginPassword",required = true) String loginPassword) {
+                        @RequestParam (value = "loginPassword",required = true) String loginPassword,
+                        @RequestParam (value = "messageCode",required = true) String messageCode) {
         Map<String,Object> retMap = new HashMap<String,Object>();
 
         //验证手机号码格式
@@ -320,6 +336,12 @@ public class UserController {
             return retMap;
         }
 
+        String value = redisService.getValue(phone);
+
+        if (!StringUtils.equals(value,messageCode)) {
+            retMap.put(Constants.ERROR_MESSAGE,"请输入正确的短信验证码");
+            return retMap;
+        }
 
         //用户登录【1.根据手机号和密码查询用户 2.更新最近登录时间】（手机号，密码） -> 返回User|Map
         User user = userService.login(phone,loginPassword);
