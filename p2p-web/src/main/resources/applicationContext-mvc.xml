@@ -36,7 +36,7 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/loan/**"/>
             <mvc:exclude-mapping path="/loan/loan"/>
@@ -48,8 +48,9 @@
             <mvc:exclude-mapping path="/loan/loadStat"/>
             <mvc:exclude-mapping path="/loan/message/register"/>
             <mvc:exclude-mapping path="/loan/messageCode"/>
+            <mvc:exclude-mapping path="/loan/wxpayNotify"/>
             <bean class="com.bjpowernode.p2p.interceptor.UserInterceptor"/>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 
 </beans>

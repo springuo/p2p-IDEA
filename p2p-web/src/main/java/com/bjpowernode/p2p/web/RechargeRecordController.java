@@ -8,6 +8,7 @@ import com.bjpowernode.p2p.model.loan.RechargeRecord;
 import com.bjpowernode.p2p.model.user.User;
 import com.bjpowernode.p2p.service.loan.OnlyNumberService;
 import com.bjpowernode.p2p.service.loan.RechargeRecordService;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -15,6 +16,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,9 +44,11 @@ import java.util.Map;
 @Controller
 public class RechargeRecordController {
 
+
+    Logger logger = LogManager.getLogger(RechargeRecordController.class);
+
     @Autowired
     private RechargeRecordService rechargeRecordService;
-
 
     @Autowired
     private OnlyNumberService onlyNumberService;
@@ -92,7 +97,7 @@ public class RechargeRecordController {
     public String alipayBack(HttpServletRequest request,Model model,
                              @RequestParam (value = "signVerified",required = true) String signVerified,
                              @RequestParam (value = "out_trade_no",required = true) String out_trade_no,
-                             @RequestParam (value = "total_amount",required = true) Double total_amount) {
+                             @RequestParam (value = "total_amount",required = true) Double total_amount) throws Exception {
 
         System.out.println("-----------p2p-web------alipayBack-----------");
 
@@ -222,7 +227,7 @@ public class RechargeRecordController {
     @RequestMapping(value = "/loan/generateQRCode")
     public void generateQRCode(HttpServletRequest request, HttpServletResponse response,
                                @RequestParam (value = "rechargeMoney",required = true) Double rechargeMoney,
-                               @RequestParam (value = "rechargeNo",required = true) String rechargeNo) throws IOException, WriterException {
+                               @RequestParam (value = "rechargeNo",required = true) String rechargeNo) throws Exception {
 
         Map<String,Object> paramMap = new HashMap<String,Object>();
 
@@ -232,6 +237,7 @@ public class RechargeRecordController {
 
 
         //调用pay工程的统一下单接口 -> 返回参数，包含code_url
+//        String jsonString = HttpClientUtils.doPost("http://124.207.55.84:9090/pay/api/wxpay", paramMap);
         String jsonString = HttpClientUtils.doPost("http://localhost:9090/pay/api/wxpay", paramMap);
 
         //使用fastJson解析json格式的字符串
@@ -262,6 +268,9 @@ public class RechargeRecordController {
 
                 MatrixToImageWriter.writeToStream(bitMatrix,"png",outputStream);
 
+                outputStream.flush();
+                outputStream.close();
+
             } else {
                 response.sendRedirect(request.getContextPath() + "/toRechargeBack.jsp");
             }
@@ -269,6 +278,135 @@ public class RechargeRecordController {
         } else {
             response.sendRedirect(request.getContextPath() + "/toRechargeBack.jsp");
         }
+
+    }
+
+
+    /*@RequestMapping(value = "/loan/wxpayNotify")
+    public void wxpayBack(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+        try{
+            InputStream reqInput = request.getInputStream();
+            if (reqInput == null) {
+                //没有接收到数据!!!
+                buffer.append("no-data");
+            } else {
+                BufferedReader bin = new BufferedReader(new InputStreamReader(reqInput, "utf-8"));
+                String line = null;
+                while ((line = bin.readLine()) != null) {
+                    buffer.append(line).append("\r\n");
+                }
+
+                bin.close();
+                reqInput.close();
+            }
+
+
+
+            String notifyXml = buffer.toString();
+            logger.info("微信异步通知消息内容：" + notifyXml);
+//            pay.weixinNotice(notifyXml);
+
+            Map<String, String> notifyDataMap = WXPayUtil.xmlToMap(notifyXml);
+
+            //判断回调信息是否成功
+            if (StringUtils.equals(Constants.SUCCESS, (String) notifyDataMap.get("result_code"))) {
+
+                String out_trade_no = notifyDataMap.get("out_trade_no");
+                String total_fee = notifyDataMap.get("total_fee");
+
+                logger.info("充值订单号：" + out_trade_no +",充值金额：" + total_fee);
+
+            } else {
+
+                response.sendRedirect(request.getContextPath()+"/index");
+            }
+
+
+            response.sendRedirect(request.getContextPath()+"/loan/myCenter");
+
+        }catch(Exception e) {
+
+            e.printStackTrace();
+
+        }finally{
+            //输出给微信的响应
+            StringBuilder answerXml  = new StringBuilder();
+            answerXml.append("<xml>")
+                    .append("<return_code><![CDATA[SUCCESS]]></return_code>")
+                    .append("<return_msg><![CDATA[OK]]></return_msg>")
+                    .append("</xml>");
+
+            PrintWriter pw = response.getWriter();
+            pw.println(answerXml.toString());
+            pw.flush();
+            pw.close();
+        }
+    }*/
+
+
+    @RequestMapping(value = "/loan/wxpayNotify")
+    public void wxpayNotify(HttpServletRequest request,HttpServletResponse response,
+                     @RequestParam (value = "notifyDataXml",required = true) String notifyDataXml) throws Exception {
+
+       logger.info("微信异步通知参数：" + notifyDataXml);
+
+        try {
+            //将xml格式的异步通知参数转换为map集合
+            Map<String, String> notifyDataMap = WXPayUtil.xmlToMap(notifyDataXml);
+
+            //获取return_code
+            String return_code = notifyDataMap.get("return_code");
+
+            if (StringUtils.equals(Constants.SUCCESS, return_code)) {
+
+                //获取result_code
+                String result_code = notifyDataMap.get("result_code");
+
+                if (StringUtils.equals(Constants.SUCCESS, result_code)) {
+
+                    //获取商户订单号
+                    String out_trade_no = notifyDataMap.get("out_trade_no");
+                    //获取交易金额，单位为分
+                    String total_fee = notifyDataMap.get("total_fee");
+
+                    //将金额单位分转换为元
+                    BigDecimal bigDecimal = new BigDecimal(total_fee);
+                    BigDecimal divide = bigDecimal.divide(new BigDecimal(100));
+                    Double rechargeMoney = Double.valueOf(String.valueOf(divide));
+
+                    //从session中获取用户信息
+                    User sessionUser = (User) request.getSession().getAttribute(Constants.SESSION_USER);
+
+                    //准备充值参数
+                    Map<String,Object> paramMap = new HashMap<String,Object>();
+                    paramMap.put("rechargeMoney",rechargeMoney);
+                    paramMap.put("rechargeNo",out_trade_no);
+                    paramMap.put("uid",sessionUser.getId());
+
+
+                    rechargeRecordService.recharge(paramMap);
+
+                    response.sendRedirect(request.getContextPath() + "/loan/myCenter");
+
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/toRechargeBack.jsp");
+                }
+
+            } else {
+                response.sendRedirect(request.getContextPath() + "/toRechargeBack.jsp");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/toRechargeBack.jsp");
+        } finally {
+            logger.info("[p2p-响应微信服务器]");
+            PrintWriter pw = response.getWriter();
+            pw.println("OK");
+            pw.flush();
+            pw.close();
+        }
+
 
     }
 }

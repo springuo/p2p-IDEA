@@ -79,4 +79,19 @@ public class Constants {
      * 唯一数字
      */
     public static final String ONLY_NUMBER = "onlyNumber";
+
+    /**
+     * 错误码
+     */
+    public static final String CODE = "code";
+
+    /**
+     * 错误消息
+     */
+    public static final String MESSAGE = "message";
+
+    /**
+     * ERROR
+     */
+    public static final String ERROR = "error";
 }

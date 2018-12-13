@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="debug">
+<configuration status="OFF">
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="ACCEPT"/>
@@ -8,7 +8,7 @@
         <RollingFile name="RollingFile" fileName="/opt/tomcat_dataservice/logs/dataservice.log"
                      filePattern="/opt/tomcat_dataservice/logs/$${date:yyyy-MM}/dataservice-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout
-                    pattern="[dataservice] %d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+                    pattern="[dataservice] %-d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] %class{36} %L %M - %msg%xEx%n"/>
             <SizeBasedTriggeringPolicy size="100MB"/>
         </RollingFile>
     </appenders>

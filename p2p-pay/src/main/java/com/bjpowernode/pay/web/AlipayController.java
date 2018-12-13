@@ -1,4 +1,4 @@
-package com.bjpowernode.pay;
+package com.bjpowernode.pay.web;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -45,18 +45,18 @@ public class AlipayController {
         AlipayClient alipayClient = new DefaultAlipayClient(
                 payConfig.getAlipayGatewayUrl(),
                 payConfig.getAlipayAppid(),
-                payConfig.getMerchantPrivateKey(),
-                payConfig.getAlipayFormat(),
-                payConfig.getAlipayCharset(),
+                payConfig.getAlipayPrivateKey(),
+                payConfig.getFormat(),
+                payConfig.getCharset(),
                 payConfig.getAlipayPublicKey(),
                 payConfig.getAlipaySignType());
 
         //设置请求参数
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
         //同步返回地址
-        alipayRequest.setReturnUrl(payConfig.getReturnUrl());
+        alipayRequest.setReturnUrl(payConfig.getAlipayReturnUrl());
         //异步返还地址
-        alipayRequest.setNotifyUrl(payConfig.getNotifyUrl());
+        alipayRequest.setNotifyUrl(payConfig.getAlipayNotifyUrl());
 
 
         alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
@@ -64,15 +64,6 @@ public class AlipayController {
                 + "\"subject\":\""+ subject +"\","
                 + "\"body\":\""+ body +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
-
-        //若想给BizContent增加其他可选请求参数，以增加自定义超时时间参数timeout_express来举例说明
-        //alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
-        //		+ "\"total_amount\":\""+ total_amount +"\","
-        //		+ "\"subject\":\""+ subject +"\","
-        //		+ "\"body\":\""+ body +"\","
-        //		+ "\"timeout_express\":\"10m\","
-        //		+ "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
-        //请求参数可查阅【电脑网站支付的API文档-alipay.trade.page.pay-请求参数】章节
 
         //请求
         String result = alipayClient.pageExecute(alipayRequest).getBody();
@@ -109,7 +100,7 @@ public class AlipayController {
         boolean signVerified = AlipaySignature.rsaCheckV1(
                 params,
                 payConfig.getAlipayPublicKey(),
-                payConfig.getAlipayCharset(),
+                payConfig.getCharset(),
                 payConfig.getAlipaySignType());
 
         //——请在这里编写您的程序（以下代码仅作参考）——
@@ -132,7 +123,6 @@ public class AlipayController {
         }
 
         model.addAttribute("pay_p2p_return_url","http://localhost:8080/p2p/loan/alipayBack");
-        //——请在这里编写您的程序（以上代码仅作参考）——
 
         return "toP2P";
     }
@@ -146,9 +136,9 @@ public class AlipayController {
         AlipayClient alipayClient = new DefaultAlipayClient(
                 payConfig.getAlipayGatewayUrl(),
                 payConfig.getAlipayAppid(),
-                payConfig.getMerchantPrivateKey(),
-                payConfig.getAlipayFormat(),
-                payConfig.getAlipayCharset(),
+                payConfig.getAlipayPrivateKey(),
+                payConfig.getFormat(),
+                payConfig.getCharset(),
                 payConfig.getAlipayPublicKey(),
                 payConfig.getAlipaySignType());
 

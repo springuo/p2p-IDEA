@@ -166,6 +166,7 @@ function register(){
 				"messageCode":messageCode
 			},
 			success:function (jsonObject) {
+				alert(jsonObject.errorMessage);
 				if (jsonObject.errorMessage == "OK") {
 					//跳转至实名认证页面
 					window.location.href = "realName.jsp";

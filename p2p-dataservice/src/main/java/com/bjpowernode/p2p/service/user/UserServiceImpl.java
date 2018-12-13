@@ -1,17 +1,21 @@
 package com.bjpowernode.p2p.service.user;
 
 import com.bjpowernode.p2p.common.constant.Constants;
+import com.bjpowernode.p2p.common.exception.LoanException;
 import com.bjpowernode.p2p.mapper.user.FinanceAccountMapper;
 import com.bjpowernode.p2p.mapper.user.UserMapper;
 import com.bjpowernode.p2p.model.user.FinanceAccount;
 import com.bjpowernode.p2p.model.user.User;
 import com.bjpowernode.p2p.model.vo.ResultObject;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
+    private Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserMapper userMapper;
 
@@ -33,7 +39,7 @@ public class UserServiceImpl implements UserService {
     private FinanceAccountMapper financeAccountMapper;
 
     @Autowired
-    private RedisTemplate<Object,Object> redisTemplate;
+    private RedisTemplate<Object, Object> redisTemplate;
 
     @Override
     public Long queryAllUserCount() {
@@ -55,7 +61,7 @@ public class UserServiceImpl implements UserService {
             allUserCount = userMapper.selectAllUserCount();
 
             //将该值存放到redis缓存中
-            boundValueOps.set(allUserCount,15, TimeUnit.SECONDS);
+            boundValueOps.set(allUserCount, 15, TimeUnit.SECONDS);
 
         }
 
@@ -70,9 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultObject register(String phone, String loginPassword) {
-        ResultObject resultObject = new ResultObject();
-        resultObject.setErrorCode(Constants.SUCCESS);
+    public void register(String phone, String loginPassword){
 
         //新增用户
         User user = new User();
@@ -80,28 +84,31 @@ public class UserServiceImpl implements UserService {
         user.setLoginPassword(loginPassword);
         user.setAddTime(new Date());
         user.setLastLoginTime(new Date());
-        int insertUserCount = userMapper.insertSelective(user);
 
-        if (insertUserCount > 0) {
-            User userInfo = userMapper.selectUserByPhone(phone);
-            //新增帐户
-            FinanceAccount financeAccount = new FinanceAccount();
-            financeAccount.setUid(userInfo.getId());
-            financeAccount.setAvailableMoney(888.0);
-            int insertFinanceCount = financeAccountMapper.insertSelective(financeAccount);
 
-            if (insertFinanceCount < 0) {
-                resultObject.setErrorCode(Constants.FAIL);
-            }
-
-        } else {
-            resultObject.setErrorCode(Constants.FAIL);
+        try {
+            userMapper.insertSelective(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info("新增理财用户失败.异常信息：" + e.getMessage());
+            throw new LoanException("新增理财用户失败.异常信息：" + e.getMessage());
         }
 
 
+        //新增帐户
+        User userInfo = userMapper.selectUserByPhone(phone);
+        FinanceAccount financeAccount = new FinanceAccount();
+        financeAccount.setUid(userInfo.getId());
+        financeAccount.setAvailableMoney(888.0);
 
+        try {
+            financeAccountMapper.insertSelective(financeAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info("新增理财用户失败.异常信息：" + e.getMessage());
+            throw new LoanException("新增理财用户失败.异常信息：" + e.getMessage());
+        }
 
-        return resultObject;
     }
 
 
@@ -115,7 +122,7 @@ public class UserServiceImpl implements UserService {
     public User login(String phone, String loginPassword) {
 
         //1.根据用户手机号和登录密码查询用户信息
-        User user = userMapper.selectUserByPhoneAndLoginPassword(phone,loginPassword);
+        User user = userMapper.selectUserByPhoneAndLoginPassword(phone, loginPassword);
 
         //判断用户是否存在
         if (null != user) {

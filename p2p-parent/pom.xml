@@ -32,6 +32,13 @@
         <commons-io-version>2.5</commons-io-version>
         <httpclient-version>4.5.2</httpclient-version>
         <fastjson-version>1.2.36</fastjson-version>
+        <google-zxing-core-version>3.0.0</google-zxing-core-version>
+        <google-zxing-javase-version>3.0.0</google-zxing-javase-version>
+        <org-dom4j-version>2.1.0</org-dom4j-version>
+        <wxpay-sdk-version>0.0.3</wxpay-sdk-version>
+        <lombok-version>1.18.2</lombok-version>
+        <!--<commons-logging-version>1.2</commons-logging-version>-->
+
     </properties>
 
     <dependencyManagement>
@@ -245,6 +252,49 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson-version}</version>
             </dependency>
+
+            <!-- google生成二维码依赖 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${google-zxing-core-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${google-zxing-javase-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${org-dom4j-version}</version>
+            </dependency>
+
+            <!--微信支付的SDK-->
+            <dependency>
+                <groupId>com.github.wxpay</groupId>
+                <artifactId>wxpay-sdk</artifactId>
+                <version>${wxpay-sdk-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok-version}</version>
+                <!--
+                    provided：编译运行时生效，打包时不将该包打包
+                 -->
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- commons-logging依赖的JAR配置start -->
+            <!--<dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-io-version}</version>
+            </dependency>-->
 
         </dependencies>
     </dependencyManagement>

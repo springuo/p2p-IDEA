@@ -10,6 +10,7 @@ import com.bjpowernode.p2p.model.vo.PaginatinoVO;
 import com.bjpowernode.p2p.service.loan.BidInfoService;
 import com.bjpowernode.p2p.service.loan.LoanInfoService;
 import com.bjpowernode.p2p.service.user.FinanceAccountService;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,8 @@ import java.util.Map;
  */
 @Controller
 public class LoanInfoController {
+
+
 
     @Autowired
     private LoanInfoService loanInfoService;

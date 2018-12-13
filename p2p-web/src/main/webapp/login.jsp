@@ -21,7 +21,7 @@
         table.data-table .colspan-b{width:25%;}
         table.data-table .colspan-c{width:40%;}
         table.data-table td pre{display: block; padding:5px; border: 1px solid #00caff;background: #f8fcff;text-align: left;}
-        .testBtn-a{display: inline-block;height:30px;line-height:30px;padding:0 10px; border:0; border-radius:5px;color:#fff;background:rgb(65,133,244);cursor: pointer;}
+        .testBtn-a{display: inline-block;height:30px;line-height:30px;padding:0 8px; border:0; border-radius:5px;color:#fff;background:rgb(65,133,244);cursor: pointer;}
         .testBtn-a.on{background:#c9c9c9;color:#666;cursor: default;}
         .data-show-box{line-height:30px;}
         .date-tiem-span,.date-s-span{display: inline-block;font-size:18px; width:36px; height:30px;line-height:30px; text-align: center; color:#fff; border-radius:5px;}

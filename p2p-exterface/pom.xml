@@ -11,5 +11,17 @@
 
     <artifactId>p2p-exterface</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.bjpowernode.p2p</groupId>
+            <artifactId>p2p-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+    </dependencies>
 </project>

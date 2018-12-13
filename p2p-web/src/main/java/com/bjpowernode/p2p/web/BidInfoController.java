@@ -34,7 +34,6 @@ public class BidInfoController {
                                        @RequestParam (value = "loanId",required = true) Integer loanId,
                                        @RequestParam (value = "bidMoney",required = true) Double bidMoney) {
         Map<String,Object> retMap = new HashMap<String,Object>();
-
         //从session中获取用户的信息
         User sesionUser = (User) request.getSession().getAttribute(Constants.SESSION_USER);
 

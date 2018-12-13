@@ -18,19 +18,29 @@
 
 
     <!--加载系统配置文件-->
-    <context:property-placeholder location="classpath:alipay-config.properties"/>
+    <context:property-placeholder location="classpath:pay-config.properties"/>
 
-    <!--加载配置bean-->
+    <!--加载配置payConfig-->
     <bean class="com.bjpowernode.pay.config.PayConfig">
         <property name="alipayAppid" value="${alipayAppid}"/>
-        <property name="alipayCharset" value="${alipayCharset}"/>
-        <property name="alipayFormat" value="${alipayFormat}"/>
+        <property name="charset" value="${charset}"/>
+        <property name="format" value="${format}"/>
+        <property name="payHost" value="${payHost}"/>
+
         <property name="alipayGatewayUrl" value="${alipayGatewayUrl}"/>
         <property name="alipayPublicKey" value="${alipayPublicKey}"/>
         <property name="alipaySignType" value="${alipaySignType}"/>
-        <property name="merchantPrivateKey" value="${merchantPrivateKey}"/>
-        <property name="returnUrl" value="${returnUrl}"/>
-        <property name="notifyUrl" value="${notifyUrl}"/>
+        <property name="alipayPrivateKey" value="${alipayPrivateKey}"/>
+        <property name="alipayReturnUrl" value="${alipayReturnUrl}"/>
+        <property name="alipayNotifyUrl" value="${alipayNotifyUrl}"/>
+
+        <property name="wxpayAppid" value="${wxpayAppid}"/>
+        <property name="wxpayMchid" value="${wxpayMchid}"/>
+        <property name="wxpayNotifyUrl" value="${wxpayNotifyUrl}"/>
+        <property name="wxpayTradeType" value="${wxpayTradeType}"/>
+        <property name="wxpayKey" value="${wxpayKey}"/>
+        <property name="wxpayUrl" value="${wxpayUrl}"/>
+
     </bean>
 
 

@@ -10,30 +10,45 @@ package com.bjpowernode.pay.config;
  */
 public class PayConfig {
 
+    private String format;
+    private String charset;
+    private String payHost;
+
+
     private String alipayGatewayUrl;
     private String alipayAppid;
-    private String merchantPrivateKey;
-    private String alipayFormat;
-    private String alipayCharset;
+    private String alipayPrivateKey;
     private String alipayPublicKey;
     private String alipaySignType;
-    private String returnUrl;
-    private String notifyUrl;
+    private String alipayReturnUrl;
+    private String alipayNotifyUrl;
 
-    public String getReturnUrl() {
-        return returnUrl;
+
+    private String wxpayAppid;
+    private String wxpayMchid;
+    private String wxpayNotifyUrl;
+    private String wxpayTradeType;
+    private String wxpayKey;
+    private String wxpayUrl;
+
+
+
+
+
+    public String getFormat() {
+        return format;
     }
 
-    public void setReturnUrl(String returnUrl) {
-        this.returnUrl = returnUrl;
+    public void setFormat(String format) {
+        this.format = format;
     }
 
-    public String getNotifyUrl() {
-        return notifyUrl;
+    public String getCharset() {
+        return charset;
     }
 
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 
     public String getAlipayGatewayUrl() {
@@ -52,28 +67,12 @@ public class PayConfig {
         this.alipayAppid = alipayAppid;
     }
 
-    public String getMerchantPrivateKey() {
-        return merchantPrivateKey;
+    public String getAlipayPrivateKey() {
+        return alipayPrivateKey;
     }
 
-    public void setMerchantPrivateKey(String merchantPrivateKey) {
-        this.merchantPrivateKey = merchantPrivateKey;
-    }
-
-    public String getAlipayFormat() {
-        return alipayFormat;
-    }
-
-    public void setAlipayFormat(String alipayFormat) {
-        this.alipayFormat = alipayFormat;
-    }
-
-    public String getAlipayCharset() {
-        return alipayCharset;
-    }
-
-    public void setAlipayCharset(String alipayCharset) {
-        this.alipayCharset = alipayCharset;
+    public void setAlipayPrivateKey(String alipayPrivateKey) {
+        this.alipayPrivateKey = alipayPrivateKey;
     }
 
     public String getAlipayPublicKey() {
@@ -90,5 +89,79 @@ public class PayConfig {
 
     public void setAlipaySignType(String alipaySignType) {
         this.alipaySignType = alipaySignType;
+    }
+
+    public String getAlipayReturnUrl() {
+        return alipayReturnUrl;
+    }
+
+    public void setAlipayReturnUrl(String alipayReturnUrl) {
+        this.alipayReturnUrl = alipayReturnUrl;
+    }
+
+    public String getAlipayNotifyUrl() {
+        return alipayNotifyUrl;
+    }
+
+    public void setAlipayNotifyUrl(String alipayNotifyUrl) {
+        this.alipayNotifyUrl = alipayNotifyUrl;
+    }
+
+
+    public String getPayHost() {
+        return payHost;
+    }
+
+    public void setPayHost(String payHost) {
+        this.payHost = payHost;
+    }
+
+    public String getWxpayAppid() {
+        return wxpayAppid;
+    }
+
+    public void setWxpayAppid(String wxpayAppid) {
+        this.wxpayAppid = wxpayAppid;
+    }
+
+    public String getWxpayMchid() {
+        return wxpayMchid;
+    }
+
+    public void setWxpayMchid(String wxpayMchid) {
+        this.wxpayMchid = wxpayMchid;
+    }
+
+    public String getWxpayNotifyUrl() {
+        return wxpayNotifyUrl;
+    }
+
+    public void setWxpayNotifyUrl(String wxpayNotifyUrl) {
+        this.wxpayNotifyUrl = wxpayNotifyUrl;
+    }
+
+    public String getWxpayTradeType() {
+        return wxpayTradeType;
+    }
+
+    public void setWxpayTradeType(String wxpayTradeType) {
+
+        this.wxpayTradeType = wxpayTradeType;
+    }
+
+    public String getWxpayKey() {
+        return wxpayKey;
+    }
+
+    public void setWxpayKey(String wxpayKey) {
+        this.wxpayKey = wxpayKey;
+    }
+
+    public String getWxpayUrl() {
+        return wxpayUrl;
+    }
+
+    public void setWxpayUrl(String wxpayUrl) {
+        this.wxpayUrl = wxpayUrl;
     }
 }
